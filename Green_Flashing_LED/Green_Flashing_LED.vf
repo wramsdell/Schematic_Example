@@ -1,0 +1,186 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 12.3
+//  \   \         Application : sch2hdl
+//  /   /         Filename : Green_Flashing_LED.vf
+// /___/   /\     Timestamp : 11/22/2010 13:02:43
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: sch2hdl -intstyle ise -family spartan3a -verilog C:/FPGA_Projects/Schematic_Example/Green_Flashing_LED/Green_Flashing_LED.vf -w C:/FPGA_Projects/Schematic_Example/Green_Flashing_LED/Green_Flashing_LED.sch
+//Design Name: Green_Flashing_LED
+//Device: spartan3a
+//Purpose:
+//    This verilog netlist is translated from an ECS schematic.It can be 
+//    synthesized and simulated, but it should not be modified. 
+//
+`timescale 100 ps / 10 ps
+
+module FTP_HXILINX_Green_Flashing_LED(Q, C, PRE, T);
+   
+   output             Q;
+
+   input 	      C;	
+   input 	      PRE;	
+   input              T;
+   
+   parameter INIT = 1'b1;
+   reg                Q = INIT;
+
+   always @(posedge C or posedge PRE)
+     begin
+	if (PRE)
+	  Q <= 1'b1;
+	else if(T)
+          Q <= !Q;
+     end
+   
+endmodule
+`timescale  100 ps / 10 ps
+
+module COMP8_HXILINX_Green_Flashing_LED (EQ, A, B);
+    
+
+   output EQ;
+
+   input  [7:0] A;
+   input  [7:0] B;
+
+   assign EQ = (A==B) ;
+
+endmodule
+`timescale 100 ps / 10 ps
+
+module CB16CE_HXILINX_Green_Flashing_LED(CEO, Q, TC, C, CE, CLR);
+   
+   parameter TERMINAL_COUNT = 16'b1111_1111_1111_1111;
+   
+   output             CEO;
+   output [15:0]      Q;
+   output             TC;
+
+   input 	      C;	
+   input 	      CE;	
+   input 	      CLR;	
+   
+   reg    [15:0]      Q;
+   
+   always @(posedge C or posedge CLR)
+     begin
+	if (CLR)
+	  Q <= 16'b0000_0000_0000_0000;
+	else if (CE)
+	  Q <= Q + 1;
+     end
+   
+   assign CEO = TC & CE;
+   assign TC = CLR ? 1'b0 : (Q == TERMINAL_COUNT);
+   
+endmodule
+`timescale 100 ps / 10 ps
+
+module CB8CE_HXILINX_Green_Flashing_LED(CEO, Q, TC, C, CE, CLR);
+   
+   parameter TERMINAL_COUNT = 8'b1111_1111;
+   
+   output             CEO;
+   output [7:0]       Q;
+   output             TC;
+
+   input 	      C;	
+   input 	      CE;	
+   input 	      CLR;	
+   
+   reg   [7:0]        Q;
+   
+   always @(posedge C or posedge CLR)
+     begin
+	if (CLR)
+	  Q <= 8'b0000_0000;
+	else if (CE)
+	  Q <= Q + 1;
+     end
+   
+   assign CEO = TC & CE;
+   assign TC = CLR ? 1'b0 : (Q == TERMINAL_COUNT);
+   
+endmodule
+`timescale  100 ps / 10 ps
+
+module COMP16_HXILINX_Green_Flashing_LED (EQ, A, B);
+    
+
+   output EQ;
+
+   input  [15:0] A;
+   input  [15:0] B;
+
+   assign EQ = (A == B) ;
+
+endmodule
+`timescale 1ns / 1ps
+
+module Green_Flashing_LED(CLK, 
+                          LED_GREEN);
+
+    input CLK;
+   output LED_GREEN;
+   
+   wire [23:0] TC;
+   wire [15:0] XLXN_1;
+   wire [7:0] XLXN_2;
+   wire XLXN_4;
+   wire XLXN_5;
+   wire XLXN_6;
+   wire XLXN_7;
+   wire XLXN_24;
+   wire XLXN_26;
+   wire XLXN_31;
+   wire XLXN_34;
+   wire XLXN_39;
+   
+   assign TC = 24'hBEBC20;
+   (* HU_SET = "XLXI_1_3" *) 
+   CB16CE_HXILINX_Green_Flashing_LED  XLXI_1 (.C(XLXN_7), 
+                                             .CE(XLXN_34), 
+                                             .CLR(XLXN_31), 
+                                             .CEO(XLXN_6), 
+                                             .Q(XLXN_1[15:0]), 
+                                             .TC());
+   (* HU_SET = "XLXI_2_4" *) 
+   CB8CE_HXILINX_Green_Flashing_LED  XLXI_2 (.C(XLXN_7), 
+                                            .CE(XLXN_6), 
+                                            .CLR(XLXN_31), 
+                                            .CEO(), 
+                                            .Q(XLXN_2[7:0]), 
+                                            .TC());
+   (* HU_SET = "XLXI_3_0" *) 
+   COMP16_HXILINX_Green_Flashing_LED  XLXI_3 (.A(XLXN_1[15:0]), 
+                                             .B(TC[15:0]), 
+                                             .EQ(XLXN_5));
+   (* HU_SET = "XLXI_4_1" *) 
+   COMP8_HXILINX_Green_Flashing_LED  XLXI_4 (.A(XLXN_2[7:0]), 
+                                            .B(TC[23:16]), 
+                                            .EQ(XLXN_4));
+   AND2  XLXI_5 (.I0(XLXN_5), 
+                .I1(XLXN_4), 
+                .O(XLXN_31));
+   (* HU_SET = "XLXI_9_2" *) 
+   FTP_HXILINX_Green_Flashing_LED #( .INIT(1'b1) ) XLXI_9 (.C(XLXN_31), 
+                                          .PRE(XLXN_39), 
+                                          .T(XLXN_24), 
+                                          .Q(XLXN_26));
+   GND  XLXI_19 (.G(XLXN_39));
+   VCC  XLXI_20 (.P(XLXN_24));
+   (* IOSTANDARD = "DEFAULT" *) (* SLEW = "SLOW" *) (* DRIVE = "12" *) 
+   OBUF  XLXI_26 (.I(XLXN_26), 
+                 .O(LED_GREEN));
+   (* IOSTANDARD = "DEFAULT" *) (* IBUF_DELAY_VALUE = "0" *) 
+   IBUFG  XLXI_27 (.I(CLK), 
+                  .O(XLXN_7));
+   VCC  XLXI_30 (.P(XLXN_34));
+endmodule
